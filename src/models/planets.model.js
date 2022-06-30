@@ -1,22 +1,36 @@
-let planets = [{
-        id:1,
-        name: 'Marte',
-        diametro: 32,
-        lunas: 4
-    },
-    {
-        id:2,
-        name: 'Venus',
-        diametro: 90,
-        lunas: 5
-    },
-    {
-        id:3,
-        name: 'Mercurio',
-        diametro: 32,
-        lunas: 4
-    },
-]
+const fs = require('fs');
+const path = require('path');
+const { parse } = require('csv-parse');
+
+let habitablePlanets = []
+
+const dataFilePath = path.join(__dirname, '..', '..', 'data', 'kepler_data.csv');
+
+function isHabitable(planet) {
+    return (
+        planet['koi_disposition'] === 'CONFIRMED' 
+        && planet['koi_insol'] > 0.36
+        && planet['koi_insol'] < 1.11
+        && planet['koi_prad'] < 1.6
+    )
+}
+
+fs.createReadStream(dataFilePath)
+    .pipe(
+        parse({
+            comment: '#',
+            columns: true,
+        })
+    )
+    .on('data', (planet) => {
+        if(isHabitable(planet)) {
+            console.log(planet);
+            habitablePlanets.push(planet)
+        }
+    })
+    .on('end', () => {
+        console.log(`La cantidad de planetas habitables es: ${habitablePlanets.length}`);
+    })
 
 function findAllPlanets() {
     return planets
@@ -27,27 +41,4 @@ function findPlanetById(id) {
     return foundPlanet
 }
 
-function savePlanet(planet) {
-    planets.push(planet);
-}
-
-function updatePlanet(id, body) {
-    const planetIdx = planets.findIndex((planet) => planet.id === id)
-
-    const planetToUpdate = planets[planetIdx]
-
-    const updatedPlanet = {
-        ...planetToUpdate,
-        ...body
-    }
-
-    planets[planetIdx] = updatedPlanet
-
-    return updatePlanet
-}
-
-function deletePlanet(id) {
-    planets = planets.filter((planet) => planet.id !== id)
-}
-
-module.exports = { findAllPlanets, findPlanetById, savePlanet, updatePlanet, deletePlanet }
+module.exports = { findAllPlanets, findPlanetById }
