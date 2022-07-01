@@ -15,30 +15,38 @@ function isHabitable(planet) {
     )
 }
 
-fs.createReadStream(dataFilePath)
-    .pipe(
-        parse({
-            comment: '#',
-            columns: true,
+function loadPlanetData() {
+    return new Promise((resolve, reject) => {
+        fs.createReadStream(dataFilePath)
+        .pipe(
+            parse({
+                comment: '#',
+                columns: true,
+            })
+        )
+        .on('data', (planet) => {
+            if(isHabitable(planet)) {
+                habitablePlanets.push(planet)
+            }
         })
-    )
-    .on('data', (planet) => {
-        if(isHabitable(planet)) {
-            console.log(planet);
-            habitablePlanets.push(planet)
-        }
+        .on('error', (err) => {
+            console.log(err.message);
+        })
+        .on('end', () => {
+            console.log(`Total planets: ${habitablePlanets.length}`);
+            resolve(habitablePlanets)
+        })
     })
-    .on('end', () => {
-        console.log(`La cantidad de planetas habitables es: ${habitablePlanets.length}`);
-    })
+}
+
 
 function findAllPlanets() {
-    return planets
+    return habitablePlanets
 }
 
 function findPlanetById(id) {
-    const foundPlanet = planets.find((planet) => planet.id === id)
+    const foundPlanet = habitablePlanets.find((planet) => planet.id === id)
     return foundPlanet
 }
 
-module.exports = { findAllPlanets, findPlanetById }
+module.exports = { loadPlanetData, findAllPlanets, findPlanetById }
