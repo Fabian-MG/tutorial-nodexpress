@@ -1,3 +1,5 @@
+const { findAllPlanets, findPlanetById } = require("../models/planets.model");
+
 function httpGetPlanets(req, res) {
     const planets = findAllPlanets();
     res.json(planets)
