@@ -1,0 +1,24 @@
+{
+  "name": "tutorial-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "npm start --prefix server",
+    "client": "npm start --prefix client",
+    "watch": "npm run server & npm run client",
+    "deploy": "npm run build --prefix client && npm start --prefix server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fabian-MG/tutorial-nodexpress.git"
+  },
+  "keywords": [],
+  "author": "Fabian Miranda Garcia <garciafabian373@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fabian-MG/tutorial-nodexpress/issues"
+  },
+  "homepage": "https://github.com/Fabian-MG/tutorial-nodexpress#readme"
+}
